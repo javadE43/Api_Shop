@@ -1,0 +1,65 @@
+{
+    "register": {
+        "201": "success",
+        "400": "badrequest",
+        "401": "error 401",
+        "403": "error 403",
+        "409": "dublicateUsers",
+        "500": "filed Request",
+        "404": "notfount users"
+    },
+    "login": {
+        "200": "success",
+        "400": "badrequest",
+        "401": "error 401",
+        "403": "error 403",
+        "409": "dublicateUsers",
+        "500": "filed Request",
+        "404": "notfount users"
+    },
+    "handleRefreshToken": {
+        "200": "success",
+        "400": "badrequest",
+        "401": "The cookie is not set in the url",
+        "403": "error 403",
+        "409": "dublicateUsers",
+        "500": "filed Request",
+        "404": "notfount users"
+    },
+    "editeAndRemovePermissionFromRole": {
+        "200": "success",
+        "400": "badrequest",
+        "401": "The cookie is not set in the url",
+        "403": "error 403",
+        "409": "dublicateUsers",
+        "500": "filed Request",
+        "404": "notfount users"
+    },
+    "getUsers": {
+        "200": "success",
+        "400": "badrequest",
+        "401": "error 401",
+        "403": "error 403",
+        "409": "dublicateUsers",
+        "500": "filed Request",
+        "404": "notfount users"
+    },
+    "postAndUpdateUsers": {
+        "201": "create",
+        "200": "success",
+        "400": "badrequest",
+        "401": "error 401",
+        "403": "error 403",
+        "409": "dublicateUsers",
+        "500": "filed Request",
+        "404": "notfount users"
+    },
+    "category": {
+        "201": "create",
+        "200": "success",
+        "400": "badrequest",
+        "401": "error 401",
+        "409": "dublicatecategory",
+        "500": "filed Request"
+    }
+}
