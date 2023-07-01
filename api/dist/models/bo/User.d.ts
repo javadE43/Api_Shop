@@ -2,7 +2,7 @@ import { Optional } from "sequelize";
 import { Model } from "sequelize-typescript";
 import Token from "./Token.js";
 import Role from "./Role.js";
-import { Products } from "../index.js";
+import { Cart } from "../index.js";
 export interface PermissionRoleUsers {
     role: string;
     permission: number;
@@ -40,6 +40,25 @@ export interface UpdateUser {
 }
 export interface Login {
 }
+export interface FindUserAttributesInCart {
+    id: number;
+    firstname?: string;
+    lastname?: string;
+    username: string;
+    mobile: string;
+    email: string;
+    password: string;
+    roleId: number;
+    vender?: number;
+    active: boolean;
+    image?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+    deletionDate?: Date;
+    role: {
+        name: string;
+    };
+}
 interface UserAttributes {
     id: number;
     firstname?: string;
@@ -76,7 +95,6 @@ declare class User extends Model<UserAttributes, UserInput> implements UserAttri
     deletionDate: Date;
     tokens: Token[];
     role: Role;
-    products: Products[];
+    carts: Cart[];
 }
 export default User;
-export declare const numberof = 12;

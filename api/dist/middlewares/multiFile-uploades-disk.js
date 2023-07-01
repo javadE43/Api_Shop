@@ -10,13 +10,12 @@ const multerStorage = multer.diskStorage({
         mkdir("./src/public/uploades/images/products").then(() => {
             callback(null, join(__dirname, "..", "/public/uploades/images/products"));
         });
-        console.log(req.hostname);
-        console.log(file.size);
+        console.log(req.hostname + "hostname-----------------------------");
+        console.log(file.size + "filesize-------------------------");
     },
     filename(req, file, callback) {
         const ext = file.mimetype.split('/')[1];
-        const filename = `product-${uuidv4()}-${Date.now()}.${ext}`;
-        req.body.image = filename;
+        const filename = `shop-${uuidv4()}-${Date.now()}.${ext}`;
         req.body.images = [];
         callback(null, filename);
     },
@@ -39,9 +38,9 @@ const multerFilter = (req, file, cb) => {
 const upload = multer({
     storage: multerStorage,
     fileFilter: multerFilter,
-    limits: { fileSize: 1024 * 1024 * 5, files: 1 },
+    limits: { fileSize: 1024 * 1024 * 5, files: 4 },
 });
 export const uploadesProductImagesGallery = upload.fields([
-    { name: 'productImage', maxCount: 4 }
+    { name: 'imageproduct', maxCount: 4 }
 ]);
 //# sourceMappingURL=multiFile-uploades-disk.js.map

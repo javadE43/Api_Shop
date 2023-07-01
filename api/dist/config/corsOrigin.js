@@ -8,6 +8,6 @@ export const corsOrigin = {
             callback(new Error("not allowed by cors"));
         }
     },
-    optionsSuccessStatus: 200
+    optionsSuccessStatus: 200,
 };
 //# sourceMappingURL=corsOrigin.js.map

@@ -29,7 +29,7 @@ server.use('/api',router)
 
   //listen server
   
-  const PORT:number | string=process.env.NODE_ENV === "production" ? process.env.PORT || 8000 : 8080; 
+  const PORT:number | string=process.env.NODE_ENV === "production" ? process.env.PORT || 8080 : 8080; 
   const HOSTNAME:string =process.env.NODE_ENV === "production" ? process.env.HOSTNAME || '127.0.0.1':'127.0.0.1';
   
   //LISTEN

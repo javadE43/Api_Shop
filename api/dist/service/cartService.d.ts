@@ -1,0 +1,13 @@
+import { Transaction } from "sequelize";
+import { CartInput, FindAttributesCart } from "../models/bo/Cart.js";
+import { CartItemsInput } from "../models/bo/CartItems.js";
+import { PaginationData } from "../dal/dataSort/pagination.js";
+export declare const CreateCart: (dataCart: CartInput, dataCartItems: CartItemsInput[]) => Promise<string>;
+export declare const AddToCartItem: (data: CartItemsInput, token: string) => Promise<boolean>;
+export declare const GetCartByToken: (token: string, t?: Transaction) => Promise<boolean | FindAttributesCart>;
+export declare const GetCartByUserId: (userId: number) => Promise<boolean | FindAttributesCart>;
+export declare const GetAllCart: (token: string | null, userId: number | null, cartId: number | null, offset: number, limit: number) => Promise<boolean | PaginationData>;
+export declare const UpdateQuantity: (quantity: number, token: string, productId: number) => Promise<boolean>;
+export declare const DeleteCartByToken: (token: string) => Promise<boolean>;
+export declare const RemoveItemCart: (token: string, productId: number) => Promise<boolean>;
+export declare const UpdateStausCart: (token: string, status: number, t: Transaction) => Promise<boolean>;

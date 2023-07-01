@@ -260,6 +260,50 @@ code {
   }
 }
 
+/* login */
+
+.container__login {
+  @apply flex h-screen;
+}
+.wrapper__login {
+  @apply flex flex-col justify-center items-center w-full h-full bg-login;
+}
+.header__form__login {
+  @apply flex justify-center mb-4 text-white items-center;
+}
+.header__form__login span {
+  @apply border border-meta-5 py-2 px-4 rounded-lg bg-meta-5 text-center;
+}
+
+.form__login {
+  @apply flex flex-col;
+}
+.items__form__login {
+  @apply flex flex-col items-center mb-4 text-xs;
+}
+.items__form__login input {
+  @apply basis-2/3 p-2 rounded-lg outline-none border-none;
+}
+.items__form__login label {
+  @apply basis-1/3 text-white ml-2;
+}
+
+.items__form__submit__login {
+  @apply flex justify-start items-center;
+}
+
+.items__form__submit__login button {
+  @apply duration-500 flex border border-meta-1 rounded-xl py-1 px-5 text-white bg-meta-1 hover:bg-meta-7 hover:border-meta-7 active:translate-y-2;
+}
+
+.error__message__login{
+  @apply text-meta-1 text-xs;
+}
+
+.spinner{
+  @apply h-full w-full ;
+}
+
 /* responsive (sm) */
 
 /* header__sm */

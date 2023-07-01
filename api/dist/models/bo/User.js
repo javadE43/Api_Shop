@@ -11,7 +11,7 @@ import { Table, Column, HasMany, BelongsTo, Model, DataType, CreatedAt, UpdatedA
 import bcrypt from "bcrypt";
 import Token from "./Token.js";
 import Role from "./Role.js";
-import { Products } from "../index.js";
+import { Cart } from "../index.js";
 let User = class User extends Model {
     static async passwordHash(instance) {
         const hash = await bcrypt.hash(instance.password, 10);
@@ -114,9 +114,9 @@ __decorate([
     __metadata("design:type", Role)
 ], User.prototype, "role", void 0);
 __decorate([
-    HasMany(() => Products),
+    HasMany(() => Cart),
     __metadata("design:type", Array)
-], User.prototype, "products", void 0);
+], User.prototype, "carts", void 0);
 __decorate([
     BeforeSave,
     __metadata("design:type", Function),
@@ -132,5 +132,4 @@ User = __decorate([
     })
 ], User);
 export default User;
-export const numberof = 12;
 //# sourceMappingURL=User.js.map

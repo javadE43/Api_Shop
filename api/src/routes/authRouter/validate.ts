@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, query } from "express-validator";
 import User from "../../models/bo/User.js";
 import bcrypt from "bcrypt";
 export const validate = new (class Validate {
@@ -107,5 +107,24 @@ export const validate = new (class Validate {
           }
         }),
     ];
+  }
+  logOut(){
+    return[
+      query("username")
+      .isString()
+      .notEmpty()
+      .withMessage("The name cannot be empty")
+      .isLength({ max: 50 })
+      .withMessage("The name cannot be more than 50 characters")
+      .custom((username: string) => {
+        return User.findOne({ where: { username: username } }).then((value) => {
+          if (value) {
+            return true;
+          } else {
+            return Promise.reject(`there is no user with this (${username})`);
+          }
+        });
+      }),
+    ]
   }
 })();

@@ -1,26 +1,38 @@
 import { Model } from "sequelize-typescript";
 import { Optional } from "sequelize";
-import Products, { OutPutProductsOnCategory } from "./Product.js";
+import Products, { FindProductsInterface } from "./Product.js";
 export interface AttributesCategory {
     id: number;
     title: string;
     slug: string;
     metatitle: string;
+    image?: string;
     content: string;
 }
-export interface GetByTilte {
+export interface GetByTilteInterface {
     id: number;
     title: string;
     metatitle: string;
-    products: OutPutProductsOnCategory[];
+    slug: string;
+    image?: string;
+    content: string;
+    products: FindProductsInterface[];
 }
-export interface CategoryInput extends Optional<AttributesCategory, "id" | "slug"> {
+export interface UpdateDataParams {
+    title?: string;
+    metatitle?: string;
+    slug?: string;
+    image?: string;
+    content?: string;
 }
-export default class Categorys extends Model<AttributesCategory> implements AttributesCategory {
+export interface CategoryInput extends Optional<AttributesCategory, "id" | "slug" | "content" | "metatitle" | "image"> {
+}
+export default class Categorys extends Model<AttributesCategory, CategoryInput> implements AttributesCategory {
     readonly id: number;
     title: string;
     slug: string;
     metatitle: string;
+    image: string;
     content: string;
     products: Products[];
 }

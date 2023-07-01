@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Table, Column, Model, DataType, BelongsToMany } from "sequelize-typescript";
+import { Table, Column, Model, DataType, BelongsToMany, Default } from "sequelize-typescript";
 import Product_category from "./product_category.js";
 import Products from "./Product.js";
 let Categorys = class Categorys extends Model {
@@ -31,13 +31,15 @@ __decorate([
     __metadata("design:type", String)
 ], Categorys.prototype, "title", void 0);
 __decorate([
+    Default(" "),
     Column({
         type: DataType.STRING,
-        comment: "category_slub",
+        comment: "category_slug",
     }),
     __metadata("design:type", String)
 ], Categorys.prototype, "slug", void 0);
 __decorate([
+    Default(" "),
     Column({
         type: DataType.STRING,
         comment: "category_metatitle",
@@ -45,6 +47,15 @@ __decorate([
     __metadata("design:type", String)
 ], Categorys.prototype, "metatitle", void 0);
 __decorate([
+    Default(" "),
+    Column({
+        type: DataType.STRING,
+        comment: "category_metatitle",
+    }),
+    __metadata("design:type", String)
+], Categorys.prototype, "image", void 0);
+__decorate([
+    Default(" "),
     Column({
         type: DataType.STRING,
         comment: "category_content",
@@ -62,6 +73,7 @@ Categorys = __decorate([
         freezeTableName: true,
         tableName: "categorys",
         timestamps: true,
+        paranoid: true,
     })
 ], Categorys);
 export default Categorys;

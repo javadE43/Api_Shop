@@ -7,6 +7,7 @@ import Token from "../models/bo/Token.js";
 import { getByIdUser } from "../service/userService.js";
 import { createAccessToken, createRefreshToken } from "../util/jwt.js";
 import messageResponse from "../util/messageResponse.json" assert { type: "json" };
+import { cookieAuth, deleteCookie } from "../util/configCookie.js";
 const __filename = fileURLToPath(import.meta.url);
 const __direname = dirname(__filename);
 dotenv.config({ path: path.join(__direname, "..", "/.env") });
@@ -31,7 +32,7 @@ export const handleRefreshToken = async (req, res) => {
         response({ res, message: messageResponse.handleRefreshToken[401], code: 401 });
         return;
     }
-    res.clearCookie("shop", { httpOnly: true, sameSite: "lax" });
+    deleteCookie(res, "shop");
     jwt.verify(refreshToken, process.env.SECRET_REFRESHTOKEN, async (err, decoded) => {
         if (err) {
             response({ res, message: "expired", code: 401 });
@@ -47,11 +48,7 @@ export const handleRefreshToken = async (req, res) => {
             token.name = newRefreshToken;
             await token.save();
         }
-        res.cookie("shop", newRefreshToken, {
-            httpOnly: true,
-            sameSite: "lax",
-            maxAge: 1000 * 60 * 60 * 24,
-        });
+        cookieAuth(res, "shop");
         const result = {
             username: decoded.userInfo.username,
             accessToken: newAccessToken,

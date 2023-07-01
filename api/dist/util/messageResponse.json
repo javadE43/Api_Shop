@@ -59,6 +59,25 @@
         "200": "success",
         "400": "badrequest",
         "401": "error 401",
+        "403": "error 403",
+        "409": "dublicatecategory",
+        "500": "filed Request"
+    },
+    "products": {
+        "201": "create",
+        "200": "success",
+        "400": "badrequest",
+        "401": "error 401",
+        "403": "error 403",
+        "409": "dublicatecategory",
+        "500": "filed Request"
+    },
+    "cart": {
+        "201": "create",
+        "200": "success",
+        "400": "badrequest",
+        "401": "error 401",
+        "403": "error 403",
         "409": "dublicatecategory",
         "500": "filed Request"
     }

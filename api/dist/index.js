@@ -17,7 +17,7 @@ connectDB();
 configMiddleware(express, server);
 logError();
 server.use('/api', router);
-const PORT = process.env.NODE_ENV === "production" ? process.env.PORT || 8000 : 8080;
+const PORT = process.env.NODE_ENV === "production" ? process.env.PORT || 8080 : 8080;
 const HOSTNAME = process.env.NODE_ENV === "production" ? process.env.HOSTNAME || '127.0.0.1' : '127.0.0.1';
 server.listen(Number(PORT), HOSTNAME, () => {
     console.log(chalk.bgYellow(server.get("env")));

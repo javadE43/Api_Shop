@@ -1,0 +1,10 @@
+import { Transaction } from "sequelize";
+import { CartItemsInput } from "../models/bo/CartItems.js";
+import { CartItems } from "../models/index.js";
+import { FindAllItemsParams } from "./dataSort/helperCartItems.js";
+export declare const createCartItems: (data: CartItemsInput[], cartId: number, t: Transaction) => Promise<boolean>;
+export declare const AddItemsInCartByCartId: (data: CartItemsInput, cartId: number, t: Transaction) => Promise<boolean>;
+export declare const RemoveCartItemsByCartIdAndProductID: (cartId: number, productId: number, t: Transaction) => Promise<boolean>;
+export declare const updateQuantityByCartIdAndProductId: (quantity: number, cartId: number, productId: number, t: Transaction) => Promise<boolean>;
+export declare const RemoveAllItems: (cartId: number, t: Transaction) => Promise<boolean>;
+export declare const FindAllItems: (data: FindAllItemsParams) => Promise<false | CartItems[]>;

@@ -4,8 +4,14 @@ import _ from "lodash";
 import { Op } from "sequelize";
 import Categorys from "../models/bo/Category.js";
 import User from "../models/bo/User.js";
-export const InsertProductOnCategory = async (categoryId, productId) => {
-    const insertProOnCate = await Product_category.create({ categoryId, productId });
+import { Product_review, Role } from "../models/index.js";
+import { conditionGetAllProducts } from "./dataSort/halperProducts.js";
+export const InsertProductOnCategory = async (categoryId, productId, t) => {
+    const cat = await Categorys.findByPk(categoryId, { transaction: t });
+    if (!cat) {
+        return false;
+    }
+    const insertProOnCate = await Product_category.create({ categoryId, productId }, { transaction: t });
     if (!insertProOnCate) {
         return false;
     }
@@ -13,10 +19,8 @@ export const InsertProductOnCategory = async (categoryId, productId) => {
         return true;
     }
 };
-export const UpdateProductOnCategory = async (categoryId, productId) => {
-    const updateProOnCate = await Product_category.findOne({
-        where: { [Op.and]: [{ categoryId }, { productId }] },
-    });
+export const UpdateProductOnCategory = async (categoryId, productId, t) => {
+    const updateProOnCate = await Product_category.findOne({ where: { productId }, transaction: t });
     if (!updateProOnCate) {
         return false;
     }
@@ -29,23 +33,14 @@ export const UpdateProductOnCategory = async (categoryId, productId) => {
         return true;
     }
 };
-export const CreateProduct = async (data) => {
+export const CreateProduct = async (data, t) => {
     const dataPro = _.omit(data, ["categoryId"]);
-    const product = await Products.create({ ...dataPro, userId: Number(data.userId) });
-    if (data.categoryId && product) {
-        const tableJoin = await InsertProductOnCategory(data.categoryId, product.id);
-        return tableJoin ? true : false;
-    }
-    else if (!product) {
-        return false;
-    }
-    else {
-        return true;
-    }
+    const product = await Products.create({ ...dataPro, userId: Number(data.userId) }, { transaction: t });
+    return product ? product.id : 0;
 };
-export const GetProductsByTitle = async (productTitle) => {
-    const pro = await Products.findAll({
-        where: { title: { [Op.substring]: productTitle } },
+export const GetProductsByTitle = async (productTitle, offset, limit) => {
+    const pro = await Products.findAndCountAll({
+        where: conditionGetAllProducts(productTitle, Op),
         include: [
             {
                 model: Categorys,
@@ -53,45 +48,69 @@ export const GetProductsByTitle = async (productTitle) => {
             },
             {
                 model: User,
-                through: { attributes: [] },
+                attributes: {
+                    exclude: ["password", "roleId", "createdAt", "updatedAt", "deletionDate"]
+                },
+                include: [
+                    {
+                        model: Role,
+                        attributes: ["name"],
+                    }
+                ]
+            },
+            {
+                model: Product_review,
             },
         ],
+        offset,
+        limit
     });
-    if (!pro) {
-        return false;
-    }
-    else {
-        return pro;
-    }
+    return pro ? pro : false;
 };
-export const GetProductById = async (productId) => {
-    const pro = await Products.findAll({
+export const GetProductById = async (productId, t) => {
+    const pro = await Products.findOne({
         where: { id: productId },
         include: [
             {
                 model: Categorys,
                 through: { attributes: [] },
             },
+            {
+                model: User,
+                attributes: {
+                    exclude: ["password", "roleId", "createdAt", "updatedAt", "deletionDate"]
+                },
+                include: [
+                    {
+                        model: Role,
+                        attributes: ["name"],
+                    }
+                ]
+            },
+            {
+                model: Product_review,
+            },
         ],
+        transaction: t
     });
-    if (!pro) {
-        return false;
+    return pro ? { ...pro, images: JSON.parse(`${pro.toJSON().images}`) } : false;
+};
+export const UpdateProductById = async (data, productId, t) => {
+    const dataPro = _.omit(data, ["categoryId"]);
+    const update = await Products.update(dataPro, { where: { id: productId }, transaction: t });
+    if (!!update[0]) {
+        return true;
     }
     else {
-        return pro;
+        return false;
     }
 };
-export const UpdateProductById = async (data, productId) => {
-    const dataPro = _.omit(data, ["categoryId"]);
-    const update = await Products.update(dataPro, { where: { id: productId } });
-    if (data?.categoryId && update[0]) {
-        const tableJoin = await UpdateProductOnCategory(data.categoryId, productId);
-        return tableJoin;
-    }
-    return !!update[0] ? true : false;
+export const DeleteProductById = async (productId, t) => {
+    const remove = await Products.destroy({ where: { id: productId }, transaction: t });
+    return remove ? true : false;
 };
-export const DeleteProductById = async (productId) => {
-    const remove = await Products.destroy({ where: { id: productId } });
-    return !!remove ? true : false;
+export const GetProductsByIds = async (ids) => {
+    const products = await Products.findAll({ where: { id: { [Op.in]: ids } } });
+    return products;
 };
 //# sourceMappingURL=productsDel.js.map

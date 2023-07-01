@@ -2,9 +2,10 @@ import { validationResult } from "express-validator";
 import { response } from "../helper/customResponse.js";
 import messageResponse from "../util/messageResponse.json" assert { type: "json" };
 import * as usersService from "../service/userService.js";
-import { getPagination } from "../helper/pagination.js";
+import { getPagination } from "../dal/dataSort/pagination.js";
 import { GetTokenByNameAndUserId } from "../service/tokenService.js";
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
+import { RemoveImage } from "../helper/removeImage.js";
 export const create = async (req, res) => {
     const error = validationResult(req);
     if (!!error.array().length) {
@@ -14,22 +15,43 @@ export const create = async (req, res) => {
             code: 400,
             data: error.array(),
         });
+        if (req.body.image) {
+            RemoveImage(req.body.image);
+        }
         return;
     }
     const newUser = await usersService.create(req.body);
-    if (newUser === false) {
-        response({
-            res,
-            message: messageResponse.postAndUpdateUsers[400],
-            code: 400,
-        });
-    }
-    else {
+    if (newUser) {
         response({
             res,
             message: messageResponse.postAndUpdateUsers[201],
             code: 201,
             data: req.body.username,
+        });
+    }
+};
+export const updateUser = async (req, res) => {
+    const error = validationResult(req);
+    const id = Number(req.params.userId);
+    if (!!error.array().length) {
+        response({
+            res,
+            message: messageResponse.postAndUpdateUsers[401],
+            code: 401,
+            data: error.array(),
+        });
+        if (req.body.image) {
+            RemoveImage(req.body.image);
+        }
+        return;
+    }
+    const update = await usersService.updata(id, req.body);
+    if (update) {
+        response({
+            res,
+            message: messageResponse.postAndUpdateUsers[200],
+            code: 200,
+            data: update,
         });
     }
 };
@@ -40,7 +62,7 @@ export const getUser = async (req, res) => {
             res,
             message: messageResponse.getUsers[401],
             code: 401,
-            data: error.array()
+            data: error.array(),
         });
         return;
     }
@@ -101,35 +123,6 @@ export const getByIdUser = async (req, res) => {
         });
     }
 };
-export const updateUser = async (req, res) => {
-    const error = validationResult(req);
-    const id = Number(req.params.userId);
-    if (!!error.array().length) {
-        response({
-            res,
-            message: messageResponse.postAndUpdateUsers[401],
-            code: 401,
-            data: error.array(),
-        });
-        return;
-    }
-    const update = await usersService.updata(id, req.body);
-    if (update === false) {
-        response({
-            res,
-            message: messageResponse.postAndUpdateUsers[400],
-            code: 400,
-        });
-    }
-    else {
-        response({
-            res,
-            message: messageResponse.postAndUpdateUsers[200],
-            code: 200,
-            data: update,
-        });
-    }
-};
 export const removeUser = async (req, res) => {
     const id = Number(req.params.userId);
     const error = validationResult(req);
@@ -138,7 +131,7 @@ export const removeUser = async (req, res) => {
             res,
             message: messageResponse.getUsers[400],
             code: 400,
-            data: error.array()
+            data: error.array(),
         });
         return;
     }
@@ -167,7 +160,7 @@ export const removeMultipleUsers = async (req, res) => {
             res,
             message: messageResponse.getUsers[400],
             code: 400,
-            data: error.array()
+            data: error.array(),
         });
         return;
     }

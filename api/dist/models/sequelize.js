@@ -7,14 +7,7 @@ const __dirname = dirname(filename);
 dotenv.config({ path: path.join(__dirname, "..", "/.env") });
 const env = process.env.NODE_ENV || "development";
 import { configDB } from "../config/configDB.js";
-import User, { numberof } from "./bo/User.js";
-import Token from "./bo/Token.js";
-import Products from "./bo/Product.js";
-import Permission from "./bo/Premission.js";
-import Categorys from "./bo/Category.js";
-import Role from "./bo/Role.js";
-import RoleHasPermission from "./bo/Role_Has_Permission.js";
-import Product_category from "./bo/product_category.js";
+import { User, Token, Products, Premission, Categorys, Role, Role_Has_Permission, product_category, Product_review, Cart, CartItems, Order, OrderItems, Transaction } from "./index.js";
 const DB = configDB[env];
 console.log(DB);
 let sequelize = new Sequelize(process.env.DB, process.env.USER, process.env.PASS, {
@@ -26,16 +19,21 @@ let sequelize = new Sequelize(process.env.DB, process.env.USER, process.env.PASS
         timestamps: true,
     },
 });
-console.log(numberof);
 sequelize.addModels([
     User,
     Categorys,
-    Permission,
+    Premission,
     Products,
-    Product_category,
+    product_category,
     Role,
-    RoleHasPermission,
+    Role_Has_Permission,
     Token,
+    Product_review,
+    CartItems,
+    Cart,
+    Order,
+    OrderItems,
+    Transaction
 ]);
 export { Sequelize, sequelize };
 //# sourceMappingURL=sequelize.js.map

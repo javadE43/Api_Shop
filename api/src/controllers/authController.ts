@@ -6,13 +6,14 @@ import { validationResult } from "express-validator";
 import * as dotane from "dotenv";
 //
 import { Op } from "sequelize";
-import Token  from "../models/bo/Token.js";
+import Token from "../models/bo/Token.js";
+import User from "../models/bo/User.js";
 
 //
 import { response } from "../helper/customResponse.js";
 import messageResponse from "../util/messageResponse.json" assert { type: "json" };
 import { Register } from "../service/authService.js";
-import { getByUsernameAndEmail, UpdateActiveUser } from "../service/userService.js";
+import { getByUsernameAndEmail, LogOutUser, UpdateActiveUser } from "../service/userService.js";
 import { createAccessToken, createRefreshToken } from "../util/jwt.js";
 import { RemoveImage } from "../helper/removeImage.js";
 import { cookieAuth, deleteCookie } from "../util/configCookie.js";
@@ -47,9 +48,9 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   // validate
   const error = validationResult(req);
-  if (!error.array()) {
+  if (!!error.array().length) {
     response({ res, message: messageResponse.login[400], code: 400, data: error.array() });
-    return;
+    return
   }
   const user = await getByUsernameAndEmail(req.body.username, req.body.email);
   if (typeof user === "boolean") {
@@ -69,11 +70,11 @@ export const login = async (req: Request, res: Response) => {
       where: { [Op.and]: [{ name: cookie.shop }, { userId: user.id }] },
     });
     if (!token) {
-      deleteCookie(res,"shop")
+      deleteCookie(res, "shop");
       response({ res, message: messageResponse.login[401], code: 401 });
       return;
     }
-    deleteCookie(res,"shop")
+    deleteCookie(res, "shop");
     token.name = refreshToken;
     await token.save();
     const changeActiveUser = await UpdateActiveUser(user.id, true);
@@ -85,7 +86,7 @@ export const login = async (req: Request, res: Response) => {
       });
       return;
     }
-    cookieAuth(res,refreshToken)
+    cookieAuth(res, refreshToken);
     response({ res, message: messageResponse.login[200], code: 200, data: result });
   } else {
     //insertRefreshToken Table token
@@ -99,7 +100,54 @@ export const login = async (req: Request, res: Response) => {
       });
       return;
     }
-    cookieAuth(res,refreshToken)
+    cookieAuth(res, refreshToken);
     response({ res, message: messageResponse.login[200], code: 200, data: result });
   }
+};
+
+//logOut
+
+export const LogOut = async (req: Request, res: Response) => {
+  const cookie = req.cookies?.shop;
+  const username = req.query.username as string;
+  const error = validationResult(req);
+  console.log(!!error.array().length)
+  console.log(error.array().length)
+  console.log(error.array())
+  console.log(username)
+  if (!!error.array().length) {
+    response({
+      res,
+      message: messageResponse.getUsers[400],
+      code: 400,
+      data: error.array(),
+    });
+    return;
+  }
+  const user = await User.findOne({ where: { username }, attributes: ["id"] });
+
+  if (!user?.id || user === null) {
+    response({
+      res,
+      message: messageResponse.getUsers[403],
+      code: 403,
+    });
+    return;
+  }
+  const logt = await LogOutUser(user.id, cookie);
+
+  if (logt === false) {
+    response({
+      res,
+      message: messageResponse.getUsers[401],
+      code: 401,
+    });
+    return;
+  }
+  deleteCookie(res, "shop");
+  response({
+    res,
+    message: messageResponse.getUsers[200],
+    code: 200,
+  });
 };

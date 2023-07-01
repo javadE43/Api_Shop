@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 //
 import UserTwo from "../../assets/images/user/user-02.png";
+import { logOut } from "../../features/auth/authpiSlice";
+import { useLogoutMutation } from "../../features/auth/apiSliceAuth";
 
 //interface
 interface dropdownProfileProps {
@@ -12,6 +14,11 @@ interface dropdownProfileProps {
 
 const DropdownProfile: React.FC<dropdownProfileProps> = ({ username }) => {
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
+
+  //useNavigate
+  const navigate = useNavigate();
+  //useDispatch
+  const dispatch = useDispatch();
 
   //
   const trigger = useRef<any>(null);
@@ -38,6 +45,20 @@ const DropdownProfile: React.FC<dropdownProfileProps> = ({ username }) => {
     return () => document.removeEventListener("keydown", keypress);
   });
 
+  //useLogoutQuery
+  const [ serverlogout,{ isLoading} ] = useLogoutMutation();
+
+  const handlLogout = async() => {
+    const data=await serverlogout("javad43")
+    dispatch(logOut());
+    navigate("/login");
+  };
+
+  const handleLogin = () => {
+    navigate("/login");
+  };
+  
+
   return (
     <li className="li__navigation__sm li__navigation__md li__navigation__lg li__navigation__xl !ml-4">
       {/* icon */}
@@ -48,7 +69,7 @@ const DropdownProfile: React.FC<dropdownProfileProps> = ({ username }) => {
         className="relative flex h-9 w-9 items-center justify-center rounded-full border-[0.5px] border-stroke bg-gray hover:text-primary dark:border-strokedark dark:bg-meta-4 dark:text-white sm:w-12 sm:h-12 md:w-14 md:h-14"
       >
         <span className="inline-block w-9 h-9 sm:w-12 sm:h-12 md:w-14 md:h-14">
-          <img src={`${UserTwo}`} className="mx-w-[100%] h-auto"/>
+          <img src={`${UserTwo}`} className="mx-w-[100%] h-auto" />
         </span>
       </Link>
 
@@ -69,10 +90,10 @@ const DropdownProfile: React.FC<dropdownProfileProps> = ({ username }) => {
             <Link to="">پروفایل</Link>
           </li>
           <li>
-            <button>ورود</button>
+            <button onClick={handleLogin}>ورود</button>
           </li>
           <li>
-            <button>خروج</button>
+            <button onClick={handlLogout}>خروج</button>
           </li>
         </ul>
       </div>

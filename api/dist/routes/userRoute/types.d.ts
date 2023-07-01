@@ -49,5 +49,5 @@ export interface Pagination {
 }
 export interface Empty {
 }
-export declare type DogBreed = 'labrador' | 'german shepherd' | 'golden retriever';
-export declare type User = BaseParams & Users;
+export type DogBreed = 'labrador' | 'german shepherd' | 'golden retriever';
+export type User = BaseParams & Users;

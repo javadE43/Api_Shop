@@ -7,10 +7,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Model, DataType, Column, Table, PrimaryKey, AllowNull, AutoIncrement, Unique, CreatedAt, UpdatedAt, DeletedAt, BelongsToMany, Default, } from "sequelize-typescript";
+import { Model, DataType, Column, Table, PrimaryKey, AllowNull, AutoIncrement, Unique, ForeignKey, CreatedAt, UpdatedAt, DeletedAt, BelongsToMany, Default, HasOne, BelongsTo, HasMany, } from "sequelize-typescript";
 import Categorys from "./Category.js";
 import Product_category from "./product_category.js";
-import { numberof } from "../index.js";
+import Product_review from "./Product_review.js";
+import User from "./User.js";
+import CartItems from "./CartItems.js";
+import OrderItems from "./OrderItems.js";
 let Products = class Products extends Model {
 };
 __decorate([
@@ -43,8 +46,8 @@ __decorate([
     __metadata("design:type", String)
 ], Products.prototype, "summery", void 0);
 __decorate([
-    Column({ type: DataType.SMALLINT }),
-    __metadata("design:type", Number)
+    Column({ type: DataType.STRING }),
+    __metadata("design:type", String)
 ], Products.prototype, "type", void 0);
 __decorate([
     AllowNull(false),
@@ -52,6 +55,10 @@ __decorate([
     Column({ type: DataType.STRING(100) }),
     __metadata("design:type", String)
 ], Products.prototype, "sku", void 0);
+__decorate([
+    Column({ type: DataType.TEXT("long") }),
+    __metadata("design:type", String)
+], Products.prototype, "images", void 0);
 __decorate([
     Column({ type: DataType.FLOAT }),
     __metadata("design:type", Number)
@@ -66,7 +73,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Products.prototype, "quantity", void 0);
 __decorate([
-    AllowNull(false),
+    Default(0),
     Column({ type: DataType.TINYINT }),
     __metadata("design:type", Number)
 ], Products.prototype, "shop", void 0);
@@ -75,6 +82,10 @@ __decorate([
     Column({ type: DataType.TEXT }),
     __metadata("design:type", String)
 ], Products.prototype, "content", void 0);
+__decorate([
+    ForeignKey(() => User),
+    __metadata("design:type", Number)
+], Products.prototype, "userId", void 0);
 __decorate([
     CreatedAt,
     __metadata("design:type", Date)
@@ -93,6 +104,22 @@ __decorate([
     }),
     __metadata("design:type", Array)
 ], Products.prototype, "categorys", void 0);
+__decorate([
+    HasOne(() => Product_review),
+    __metadata("design:type", Product_review)
+], Products.prototype, "review", void 0);
+__decorate([
+    HasMany(() => CartItems),
+    __metadata("design:type", Array)
+], Products.prototype, "items", void 0);
+__decorate([
+    HasMany(() => OrderItems),
+    __metadata("design:type", Array)
+], Products.prototype, "orderItems", void 0);
+__decorate([
+    BelongsTo(() => User),
+    __metadata("design:type", User)
+], Products.prototype, "user", void 0);
 Products = __decorate([
     Table({
         freezeTableName: true,
@@ -101,5 +128,4 @@ Products = __decorate([
     })
 ], Products);
 export default Products;
-console.log(numberof);
 //# sourceMappingURL=Product.js.map

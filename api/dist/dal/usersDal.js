@@ -1,20 +1,18 @@
 import { Op } from "sequelize";
-import { paginationData } from "../helper/pagination.js";
+import { paginationData } from "./dataSort/pagination.js";
 import { RemoveImage } from "../helper/removeImage.js";
 import { sequelize } from "../models/sequelize.js";
 import Permission from "../models/bo/Premission.js";
-import Products from "../models/bo/Product.js";
 import Role from "../models/bo/Role.js";
 import Token from "../models/bo/Token.js";
 import User from "../models/bo/User.js";
-export const create = async (payload) => {
-    const create = await User.create(payload);
-    if (!!create.toJSON()?.id === false) {
-        return false;
-    }
-    else {
-        return true;
-    }
+export const create = async (payload, t) => {
+    const create = await User.create(payload, { transaction: t });
+    return create ? true : false;
+};
+export const update = async (id, payload, t) => {
+    const update = await User.update({ ...payload }, { where: { id }, transaction: t });
+    return !!update[0] ? true : false;
 };
 export const getAllUsers = async (offset, limit, condition, role) => {
     const users = await User.findAll({
@@ -55,27 +53,7 @@ export const getAllUsers = async (offset, limit, condition, role) => {
         return paginationData(result, count, limit, offset);
     }
 };
-export const getByIdUser = async (id) => {
-    const userpro = await User.findByPk(id, {
-        attributes: ["firstname", "lastname", "mobile", "email", "username", "image", "active"],
-        include: [
-            {
-                model: Role,
-                attributes: ["name"],
-                include: [
-                    {
-                        model: Permission,
-                        attributes: [[sequelize.fn("sum", sequelize.col("bits")), "permission"]],
-                        through: { attributes: [] },
-                    },
-                ],
-            },
-            {
-                model: Products,
-            },
-        ],
-    });
-    console.log(userpro);
+export const getByIdUser = async (id, t) => {
     const user = await User.findByPk(id, {
         attributes: ["firstname", "lastname", "mobile", "email", "username", "image", "active"],
         include: [
@@ -91,16 +69,17 @@ export const getByIdUser = async (id) => {
                 ],
             },
         ],
+        transaction: t
     });
-    if (!user || !user.toJSON()?.username) {
-        return false;
-    }
-    else {
+    if (user) {
         const newRole = {
             role: user.role.name,
             permission: Number(user.role.permissons[0].toJSON().permission),
         };
         return { ...user.toJSON(), role: newRole };
+    }
+    else {
+        return false;
     }
 };
 export const getByUsernameAndEmail = async (username, email) => {
@@ -130,15 +109,6 @@ export const getByUsernameAndEmail = async (username, email) => {
             permission: Number(user.role.permissons[0].toJSON().permission),
         };
         return { ...user.toJSON(), role: newRole };
-    }
-};
-export const update = async (id, payload) => {
-    const update = await User.update({ ...payload }, { where: { id } });
-    if (!update[0]) {
-        return false;
-    }
-    else {
-        return !!update[0];
     }
 };
 export const deleteById = async (id) => {

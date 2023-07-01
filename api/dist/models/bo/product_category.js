@@ -34,6 +34,7 @@ Product_category = __decorate([
         freezeTableName: true,
         timestamps: true,
         tableName: "product_category",
+        paranoid: true
     })
 ], Product_category);
 export default Product_category;

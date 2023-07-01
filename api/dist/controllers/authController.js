@@ -10,6 +10,7 @@ import { Register } from "../service/authService.js";
 import { getByUsernameAndEmail, UpdateActiveUser } from "../service/userService.js";
 import { createAccessToken, createRefreshToken } from "../util/jwt.js";
 import { RemoveImage } from "../helper/removeImage.js";
+import { cookieAuth, deleteCookie } from "../util/configCookie.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 dotane.config({ path: path.join(__dirname, "..", "/.env") });
@@ -53,11 +54,11 @@ export const login = async (req, res) => {
             where: { [Op.and]: [{ name: cookie.shop }, { userId: user.id }] },
         });
         if (!token) {
-            res.clearCookie("shop", { httpOnly: true, sameSite: "lax" });
+            deleteCookie(res, "shop");
             response({ res, message: messageResponse.login[401], code: 401 });
             return;
         }
-        res.clearCookie("shop", { httpOnly: true, sameSite: "lax" });
+        deleteCookie(res, "shop");
         token.name = refreshToken;
         await token.save();
         const changeActiveUser = await UpdateActiveUser(user.id, true);
@@ -69,11 +70,7 @@ export const login = async (req, res) => {
             });
             return;
         }
-        res.cookie("shop", refreshToken, {
-            httpOnly: true,
-            sameSite: "lax",
-            maxAge: 1000 * 60 * 60 * 24,
-        });
+        cookieAuth(res, refreshToken);
         response({ res, message: messageResponse.login[200], code: 200, data: result });
     }
     else {
@@ -87,11 +84,7 @@ export const login = async (req, res) => {
             });
             return;
         }
-        res.cookie("shop", refreshToken, {
-            httpOnly: true,
-            sameSite: "lax",
-            maxAge: 1000 * 60 * 60 * 24,
-        });
+        cookieAuth(res, refreshToken);
         response({ res, message: messageResponse.login[200], code: 200, data: result });
     }
 };

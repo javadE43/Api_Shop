@@ -1,6 +1,10 @@
+import { PaginationData } from "../dal/dataSort/pagination.js";
+import { OutPutProductsOnCategory } from "../models/bo/Product.js";
 export declare const InsertProductOnCategory: (categoryId: number, productId: number) => Promise<boolean>;
 export declare const CreateProduct: (data: any) => Promise<boolean>;
 export declare const UpdateProductOnCategory: (data: any, productId: number) => Promise<boolean>;
+export declare const UpdateProductById: (data: any, productId: number) => Promise<boolean>;
+export declare const GetProductById: (productId: number) => Promise<boolean | OutPutProductsOnCategory>;
+export declare const GetProductsByTitle: (title: string | undefined, offset: number, limit: number) => Promise<boolean | PaginationData>;
 export declare const DeleteProductById: (productId: number) => Promise<boolean>;
-export declare const GetProductById: (productId: number) => Promise<false | import("../models/index.js").Products[]>;
-export declare const GetProductsByTitle: (title: string) => Promise<false | import("../models/index.js").Products[]>;
+export declare const GetProductsByIds: (ids: number[]) => Promise<import("../models/bo/Product.js").default[]>;
