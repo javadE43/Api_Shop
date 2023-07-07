@@ -43,7 +43,7 @@ interface AttributesOrder {
 }
 //Attributes
 export interface FindOrderAttributes {
-  id:number
+  id: number;
   userId?: number;
   token: string;
   status: number;
@@ -66,7 +66,7 @@ export interface FindOrderAttributes {
 }
 //Attributes
 export interface FindOrderJoinOrderItems {
-  id:number
+  id: number;
   userId?: number;
   token: string;
   status: number;
@@ -86,8 +86,15 @@ export interface FindOrderJoinOrderItems {
   country?: string;
   createdAt?: Date;
   updatedAt?: Date;
-  orderItem:FindOrderItems[]  
+  orderItem: FindOrderItems[];
 }
+
+export interface DateFind {
+  TODAY_START?: string;
+  now?: string;
+  status?: number;
+}
+
 
 export interface OrderInput extends Optional<AttributesOrder, "id" | "sessionId"> {}
 

@@ -559,7 +559,7 @@ code {
 
 /* Calendar */
 .calendar__md {
-  @apply md:max-w-[100%] md:min-w-[10rem] md:w-[100%] md:p-1 md:my-2 md:gap-1 md:text-[1rem] md:justify-around;
+  @apply md:max-w-[100%] md:min-w-[10rem] md:w-[100%] md:p-1 md:my-2 md:gap-1 md:text-[0.7rem] md:justify-around;
 }
 
 /* order__slot__md */

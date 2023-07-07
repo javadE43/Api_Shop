@@ -1,11 +1,13 @@
 import { Transaction } from "sequelize";
+import moment from 'moment'
+//
 import * as orderDel from "../dal/orderDel.js";
 import * as orderItemsService from "../service/orderItemsService.js";
 import * as CartService from "../service/cartService.js";
 import * as CartItemsService from "../service/cartItemsService.js";
 import { sequelize } from "../models/sequelize.js";
 import { OrderInputItems } from "../models/bo/OrderItems.js";
-import { FindOrderAttributes, FindOrderJoinOrderItems, OrderInput } from "../models/bo/Order.js";
+import { DateFind, FindOrderAttributes, FindOrderJoinOrderItems, OrderInput } from "../models/bo/Order.js";
 import  {StatusCart}  from "../util/statusCart.js";
 import { FindAttributesCart } from "../models/bo/Cart.js";
 
@@ -68,3 +70,17 @@ export const DeleteOrderBYToken = async (orderId: number):Promise<boolean> => {
        })
        return result
 };
+
+
+//Today's income
+
+export const TodaysIncome=async({TODAY_START,now,status}:DateFind):Promise<[{todayIncome:number|string|null}]|number>=>{
+  if(TODAY_START&&now&&status){
+    return await orderDel.TodaysIncome({TODAY_START,now,status})
+  }else{
+    const D=new Date();
+    const TODAY_START = moment().format(`${D.getFullYear()}-${D.getMonth()}-${D.getDay()} 00:00:00`);
+    const NOW = moment().format(`${D.getFullYear()}-${D.getMonth() + 1}-${D.getDate()} 15:43:59`);
+    return await orderDel.TodaysIncome({TODAY_START:TODAY_START,now:NOW,status:StatusCart.payment})
+  }
+}

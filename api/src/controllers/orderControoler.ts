@@ -96,3 +96,19 @@ export const DeleteOrderById = async (req: Request, res: Response) => {
     });
   }
 };
+
+//Today's income
+
+export const TodaysIncome = async (req: Request, res: Response) => {
+  const date = req.query.date as string;
+  const status = Number(req.query.status) ? (Number(req.query.status) as number) : 0;
+  console.log(date + status);
+  const income: number | [{ todayIncome: string | number | null }] =
+    await orderService.TodaysIncome({});
+  response({
+    res,
+    message: "todaysIncome",
+    code: 200,
+    data: income,
+  });
+};

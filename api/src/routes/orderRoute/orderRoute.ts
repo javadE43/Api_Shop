@@ -6,6 +6,7 @@ const OrderRoute = Router();
 
 OrderRoute.post("/", controller.CreateOrder);
 OrderRoute.get("/", controller.FindOrder);
+OrderRoute.get("/income", controller.TodaysIncome);
 OrderRoute.delete("/", controller.DeleteOrderById);
 
 export default OrderRoute;

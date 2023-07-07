@@ -9,6 +9,7 @@ import productRoute from "./products/productsRoute.js";
 import roleRoute from "./roleRoute/roleRoute.js";
 import transactionRoute from "./transaction/transactionRoute.js";
 import userRouter from "./userRoute/userRoutes.js";
+import calendarRouter from "./calendar/calendar.js";
 
 //
 const router = express.Router();
@@ -21,5 +22,6 @@ router.use("/product", productRoute);
 router.use("/cart", cartRouter);
 router.use("/order", OrderRoute);
 router.use("/pay", transactionRoute);
+router.use("/calendar", calendarRouter);
 router.use(handlerError)
 export default router;

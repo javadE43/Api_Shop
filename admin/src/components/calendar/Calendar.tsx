@@ -2,22 +2,17 @@ import React, { useState, useEffect } from "react";
 
 //
 import CardOne from "../card/Card";
-import { dataFakeCalendar } from "../../data/dataCalendar";
+import { useGetCalendarQuery } from "../../features/calendar/apiCalendar";
+
 
 //Calendar
-const Calendar = () => {
-  const [date, setDate] = useState<any[]>([]);
-  useEffect(() => {
-    setDate(dataFakeCalendar);
-  }, []);
-  // handleCalendar
-  const handleCalendar = () => {};
-
+const Calendar: React.FC = () => {
+  const { isLoading, data } = useGetCalendarQuery({});
   return (
     <div className="flex flex-row items-center justify-center">
       <div className="calendar calendar__sm calendar__md calendar__lg">
-        {date.map((d, index) => (
-          <CardOne key={index} day={d.day} month={d.month} year={d.year} active={d.active} />
+        {data?.data && data.data.weeke.map((d:{weekeDayName:string,weekeDayNumber:string}) => (
+          <CardOne key={d.weekeDayNumber} day={d} month={data?.data?.date.month} year={data?.data?.date.year} active={data?.data?.date.weekday} />
         ))}
       </div>
     </div>
