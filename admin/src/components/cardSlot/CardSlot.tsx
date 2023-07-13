@@ -1,5 +1,7 @@
 import React from "react";
-import LocalAtmOutlinedIcon from '@mui/icons-material/LocalAtmOutlined';
+import LocalAtmOutlinedIcon from "@mui/icons-material/LocalAtmOutlined";
+import { useGetDailyIncomeQuery,useGetSevenDaysIncomeQuery,useGetThirtyDaysIncomeQuery,useGetTotalRevenueQuery } from "../../features/slotCardHome/slot";
+import { useCoustomeDate } from "../../hooks/useCoustomDate";
 interface CardTowProps {
   price: number;
   date: string;
@@ -8,22 +10,23 @@ interface CardTowProps {
 }
 
 export const CardSlotOne: React.FC<CardTowProps> = ({ price, date, percent, precentIcone }) => {
+  const {data,isLoading}=useGetDailyIncomeQuery({status:"payment"})
   return (
     <div className="basis-[100%] sm:basis-[49%] rounded-sm border border-stroke bg-white py-6 px-8 shadow-default dark:border-strokedark dark:bg-boxdark xl:basis-[24%]">
       <div className="flex h-11 w-11 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">
-       <LocalAtmOutlinedIcon className="text-success"/>
+        <LocalAtmOutlinedIcon className="text-success" />
       </div>
 
       <div className="mt-4 flex items-end justify-between">
         <div>
           <h4 className="text-title-md font-bold text-black dark:text-white">
-            {price} <span className="mr-2 text-xs sm:text-sm">تومان</span>
+            {data?.data?.[0]?.todayIncome} <span className="mr-2 text-xs sm:text-sm">تومان</span>
           </h4>
           <span className="text-xs sm:text-sm font-medium text-gray">{date}</span>
         </div>
 
         <span className="flex items-center gap-1 text-sm sm:text-lg font-medium text-meta-5">
-          {percent}%
+          {data?.data?.[0]?.percent}%
           {!!precentIcone ? (
             <svg
               className="fill-meta-3"
@@ -59,22 +62,24 @@ export const CardSlotOne: React.FC<CardTowProps> = ({ price, date, percent, prec
   );
 };
 export const CardSlotTow: React.FC<CardTowProps> = ({ price, date, percent, precentIcone }) => {
+  const {data,isLoading}=useGetSevenDaysIncomeQuery({start:-7,lastDate:-7,status:"payment"})
+
   return (
     <div className="basis-[100%] sm:basis-[49%] rounded-sm border border-stroke bg-white py-6 px-8 shadow-default dark:border-strokedark dark:bg-boxdark xl:basis-[24%]">
       <div className="flex h-11 w-11 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">
-      <LocalAtmOutlinedIcon className="text-success"/>
+        <LocalAtmOutlinedIcon className="text-success" />
       </div>
 
       <div className="mt-4 flex items-end justify-between">
         <div>
           <h4 className="text-title-md font-bold text-black dark:text-white">
-            {price} <span className="mr-2 text-xs sm:text-sm">تومان</span>
+            {data?.data?.[0]?.todayIncome} <span className="mr-2 text-xs sm:text-sm">تومان</span>
           </h4>
           <span className="text-xs sm:text-sm font-medium text-gray">{date}</span>
         </div>
 
         <span className="flex items-center gap-1 text-sm sm:text-lg font-medium text-meta-5">
-          {percent}%
+          {data?.data?.[0]?.percent}%
           {!!precentIcone ? (
             <svg
               className="fill-meta-3"
@@ -110,23 +115,24 @@ export const CardSlotTow: React.FC<CardTowProps> = ({ price, date, percent, prec
   );
 };
 export const CardSlotThree: React.FC<CardTowProps> = ({ price, date, percent, precentIcone }) => {
+  const {data,isLoading}=useGetThirtyDaysIncomeQuery({start:-30,lastDate:-30,status:"payment"})
+
   return (
     <div className="basis-[100%] sm:basis-[49%] rounded-sm border border-stroke bg-white py-6 px-8 shadow-default dark:border-strokedark dark:bg-boxdark xl:basis-[24%]">
       <div className="flex h-11 w-11 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">
-      <LocalAtmOutlinedIcon className="text-success"/>
-
+        <LocalAtmOutlinedIcon className="text-success" />
       </div>
 
       <div className="mt-4 flex items-end justify-between">
         <div>
           <h4 className="text-title-md font-bold text-black dark:text-white">
-            {price} <span className="mr-2 text-xs sm:text-sm">تومان</span>
+          {data?.data?.[0]?.todayIncome}<span className="mr-2 text-xs sm:text-sm">تومان</span>
           </h4>
           <span className="text-xs sm:text-sm font-medium text-gray">{date}</span>
         </div>
 
         <span className="flex items-center gap-1 text-sm sm:text-lg font-medium text-meta-5">
-          {percent}%
+          {data?.data?.[0]?.percent}%
           {!!precentIcone ? (
             <svg
               className="fill-meta-3"
@@ -165,7 +171,7 @@ export const CardSlotFore: React.FC<CardTowProps> = ({ price, date, percent, pre
   return (
     <div className="basis-[100%] sm:basis-[49%] rounded-sm border border-stroke bg-white py-6 px-8 shadow-default dark:border-strokedark dark:bg-boxdark xl:basis-[24%]">
       <div className="flex h-11 w-11 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">
-      <LocalAtmOutlinedIcon className="text-success"/>
+        <LocalAtmOutlinedIcon className="text-success" />
       </div>
 
       <div className="mt-4 flex items-end justify-between">

@@ -92,9 +92,21 @@ export interface FindOrderJoinOrderItems {
 export interface DateFind {
   TODAY_START?: string;
   now?: string;
-  status?: number;
+  lastDate?: string;
+  lastDateStart?: string;
+  status?: string | number;
+  hour?: string;
+  minute?: string;
 }
-
+export interface DateFindService {
+  TODAY_START?: string | null;
+  now?: string | null;
+  lastDate?: string | null;
+  lastDateStart?: string;
+  status?: string | number | null;
+  hour?: string | null;
+  minute?: string | null;
+}
 
 export interface OrderInput extends Optional<AttributesOrder, "id" | "sessionId"> {}
 

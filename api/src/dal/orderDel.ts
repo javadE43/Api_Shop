@@ -1,7 +1,7 @@
 import { Op, Transaction } from "sequelize";
 import { DateFind, FindOrderAttributes, FindOrderJoinOrderItems, OrderInput } from "../models/bo/Order.js";
 import { Order, OrderItems, Products } from "../models/index.js";
-import { conditionGetOrder, conditionGetOrderTodayIncome } from "./dataSort/helperOrder.js";
+import { conditionGetOrder, conditionGetOrderTodayIncome, percentOrder } from "./dataSort/helperOrder.js";
 import { sequelize } from "../models/sequelize.js";
 
 //CreateOrder
@@ -47,16 +47,26 @@ export const DeleteOrderBYToken = async (orderId: number, t?: Transaction) => {
 };
 
 //Today's income
-export const TodaysIncome = async ({TODAY_START,now,status}:DateFind):Promise<[{todayIncome:number|string|null}]|number> => {
-  const income:[{todayIncome:number|string|null}]|Order[] = await Order.findAll({
+export const TodaysIncome = async ({TODAY_START,now,lastDate,status}:DateFind,t:Transaction):Promise<[{todayIncome:number,percent:number}]> => {
+  const incomeNow:[{todayIncome:number|string|null}]|Order[] = await Order.findAll({
     attributes: [[sequelize.fn("sum", sequelize.col("grandTotal")), "todayIncome"]],
     where: conditionGetOrderTodayIncome({TODAY_START,now,status},Op),
-    raw: true
+    raw: true,
+    transaction:t
   });
-  const inmToday=JSON.parse(JSON.stringify(income[0]))
+  const lastIncome:[{todayIncome:number|string|null}]|Order[] = await Order.findAll({
+    attributes: [[sequelize.fn("sum", sequelize.col("grandTotal")), "todayIncome"]],
+    where: conditionGetOrderTodayIncome({lastDate,TODAY_START,status},Op),
+    raw: true,
+    transaction:t
+  });
+  //
+  const inmToday=JSON.parse(JSON.stringify(incomeNow[0]))
+  const lastInm=JSON.parse(JSON.stringify(lastIncome[0]))
+  //
   if (!inmToday?.todayIncome) {
-    return 0;
+    return [{todayIncome:0,percent:0}];
   } else {
-    return JSON.parse(JSON.stringify(income));
+    return [{...inmToday,percent:percentOrder<number,number>(inmToday.todayIncome,lastInm.todayIncome)}];
   }
 };

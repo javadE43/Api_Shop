@@ -100,11 +100,13 @@ export const DeleteOrderById = async (req: Request, res: Response) => {
 //Today's income
 
 export const TodaysIncome = async (req: Request, res: Response) => {
-  const date = req.query.date as string;
-  const status = Number(req.query.status) ? (Number(req.query.status) as number) : 0;
-  console.log(date + status);
-  const income: number | [{ todayIncome: string | number | null }] =
-    await orderService.TodaysIncome({});
+  const TODAY_START_DAY = req.query.start ? req.query.start as string : null;
+  const NOW_DAY = req.query.end ? req.query.end as string : null;
+  const LAST_DATE = req.query.lastDate ? req.query.lastDate as string : null;
+  const status = req.query.status ? req.query.status as string : null;
+  
+  let income: number | [{ todayIncome: string | number | null }];
+  income = await orderService.TodaysIncome({TODAY_START:TODAY_START_DAY,now:NOW_DAY,lastDate:LAST_DATE,status:status});
   response({
     res,
     message: "todaysIncome",

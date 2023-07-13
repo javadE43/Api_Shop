@@ -8,13 +8,14 @@ import * as CartItemsService from "../service/cartItemsService.js";
 import { sequelize } from "../models/sequelize.js";
 import { OrderInputItems } from "../models/bo/OrderItems.js";
 import {
-  DateFind,
+  DateFindService,
   FindOrderAttributes,
   FindOrderJoinOrderItems,
   OrderInput,
 } from "../models/bo/Order.js";
 import { StatusCart } from "../util/statusCart.js";
 import { FindAttributesCart } from "../models/bo/Cart.js";
+import { slotDate } from "../dal/dataSort/helperOrder.js";
 
 //CreateOrder
 export const CreateOrder = async (orderData: OrderInput, tokenCart: string): Promise<string> => {
@@ -92,27 +93,53 @@ export const DeleteOrderBYToken = async (orderId: number): Promise<boolean> => {
 
 //Today's income
 
-export const TodaysIncome = async ({
+// export const TodaysIncome = async ({TODAY_START,now,status}: DateFindService): Promise<[{ todayIncome: number | string | null }]> => {
+//   //DATE 
+//   const TODAY_START_DAY = new Date();
+//   const NOW = new Date();
+//   //COUSTOME HOURE START DAY
+//   TODAY_START_DAY.setUTCHours(0, 0, 0, 0);
+//   //COUSTOME DAY
+//   if(TODAY_START){TODAY_START_DAY.setUTCDate(Number(TODAY_START))}
+//   if(now){NOW.setUTCDate(Number(now))}
+//   //COUSTOME HOURE START DAY
+//   NOW.setUTCHours(24, 59, 59, 59);
+//   //DEL
+//   console.log(TODAY_START_DAY)
+//   console.log(NOW)
+//   return await orderDel.TodaysIncome({
+//     TODAY_START: TODAY_START_DAY.toISOString(),
+//     now: NOW.toISOString(),
+//     status: typeof status === "string" && status.includes("payment")?StatusCart.payment:status==="completed"?StatusCart.completed:status==="Paid"?StatusCart.Paid: status==="Registered"?StatusCart.Registered:StatusCart.payment
+//   });
+// };
+
+// //Today's income
+
+export async function TodaysIncome({
   TODAY_START,
   now,
+  lastDate,
   status,
-}: DateFind): Promise<[{ todayIncome: number | string | null }] | number> => {
-  if (TODAY_START && now && status) {
-    return await orderDel.TodaysIncome({ TODAY_START, now, status });
-  } else {
-    // const D=new Date();
-    // const TODAY_START = moment().format(`${D.getFullYear()}-0${D.getMonth() + 1}-0${D.getDate()-1}T00:00:00`);
-    // const NOW = moment().format(`${D.getFullYear()}-0${D.getMonth() + 1}-0${D.getDate()-1}T15:43:48`);
-    const TODAY_START = new Date();
-    TODAY_START.setHours(1, 12, 12, 0);
-    TODAY_START.setUTCDate(7);
-    const NOW = new Date();
-    NOW.setHours(15, 50, 12, 0);
-
+}: DateFindService): Promise<[{ todayIncome: number | string | null }]> {
+  const {LAST_DATE,NOW,TODAY_START_DAY}=await slotDate({TODAY_START,now,lastDate});
+  //DEL
+  const result=await sequelize.transaction(async(t:Transaction)=>{
     return await orderDel.TodaysIncome({
-      TODAY_START: TODAY_START.toISOString(),
+      TODAY_START: TODAY_START_DAY.toISOString(),
       now: NOW.toISOString(),
-      status: StatusCart.payment,
-    });
-  }
+      lastDate: LAST_DATE.toISOString(),
+      status:
+        typeof status === "string" && status.includes("payment")
+          ? StatusCart.payment
+          : status === "completed"
+          ? StatusCart.completed
+          : status === "Paid"
+          ? StatusCart.Paid
+          : status === "Registered"
+          ? StatusCart.Registered
+          : StatusCart.Paid,
+    },t);
+  })
+  return result;
 };
